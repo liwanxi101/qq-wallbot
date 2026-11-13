@@ -1,0 +1,20 @@
+# 运行期依赖（Python >= 3.10，qzone-sdk 要求）
+# 说明：统一使用「最低版本」约束而不是猜测的上限——上限猜测一旦落后于
+# 上游大版本就会把可用版本误排除（例如 pillow 12.x / openai 3.x）。
+fastapi>=0.110
+uvicorn[standard]>=0.30
+aiosqlite>=0.19
+pillow>=10.0
+openai>=1.50
+httpx>=0.27
+# main.py 启动时 load_dotenv() 读取同目录 .env
+python-dotenv>=1.0
+# 时区数据库：Linux 一般自带；Windows / 精简容器镜像缺失时 DISPLAY_TIMEZONE 会退回固定偏移
+tzdata>=2024.1
+
+# QQ 空间发布（MIT；[napcat] extra 提供 NapCat WebSocket 认证所需的 websockets）
+# 锁定 1.0.1：main.py 只借用该版本的认证与 HTTP 传输（QZoneClient._auth/_post/_headers），
+# 图片上传与 richval 组装由自己实现 —— 因为 1.0.1 的 publish(image_paths=...) 拼出的
+# richval 字段序与 QQ 空间要求不符，带图发布会返回 code=-10061「您输入的链接不是有效链接」。
+# 升级前请先核对 client.py 的这三个内部接口仍然存在（_RichPublishUnavailable 会提示回退）。
+qzone-sdk[napcat]==1.0.1
